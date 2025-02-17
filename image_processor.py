@@ -74,7 +74,7 @@ class ImageProcessorApp:
     def create_widgets(self):
         # 创建一个框架来容纳按钮
         button_frame = tk.Frame(self.root, bg="#f0f0f0")
-        button_frame.grid(row=4, column=0, columnspan=2, pady=20)  # 将按钮框架移动到第4行
+        button_frame.grid(row=3, column=0, columnspan=2, pady=(0, 20), sticky="s")  # 将按钮框架移动到第3行，并设置底部填充为20像素
         
         # 选择图片按钮
         self.select_image_button = tk.Button(button_frame, text="选择图片", command=self.select_image, bg="#4CAF50", fg="white", font=("Arial", 12), padx=10, pady=5)
