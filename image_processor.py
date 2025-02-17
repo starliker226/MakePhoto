@@ -49,7 +49,7 @@ class ImageProcessorApp:
     def __init__(self, root):
         self.root = root
         self.root.title("二寸证件照生成器")
-        self.root.geometry("1200x800")  # 修改初始窗口高度为800
+        self.root.geometry("500x500")  # 设置固定窗口大小为1200x800
         self.root.configure(bg="#f0f0f0")
         
         self.image_path = None
@@ -74,7 +74,7 @@ class ImageProcessorApp:
     def create_widgets(self):
         # 创建一个框架来容纳按钮
         button_frame = tk.Frame(self.root, bg="#f0f0f0")
-        button_frame.grid(row=3, column=0, columnspan=2, pady=20)
+        button_frame.grid(row=4, column=0, columnspan=2, pady=20)  # 将按钮框架移动到第4行
         
         # 选择图片按钮
         self.select_image_button = tk.Button(button_frame, text="选择图片", command=self.select_image, bg="#4CAF50", fg="white", font=("Arial", 12), padx=10, pady=5)
@@ -88,6 +88,19 @@ class ImageProcessorApp:
         self.save_image_button = tk.Button(button_frame, text="保存图片", command=self.save_image, bg="#FF5722", fg="white", font=("Arial", 12), padx=10, pady=5)
         self.save_image_button.pack(side=tk.LEFT, padx=10, expand=True)
         
+        # 关闭程序按钮
+        self.close_button = tk.Button(button_frame, text="关闭程序", command=self.close_program, bg="#F44336", fg="white", font=("Arial", 12), padx=10, pady=5)
+        self.close_button.pack(side=tk.LEFT, padx=10, expand=True)
+        
+        # 调整按钮框架居中对齐
+        button_frame.grid_columnconfigure(0, weight=1)
+        button_frame.grid_columnconfigure(1, weight=1)
+        button_frame.grid_columnconfigure(2, weight=1)
+        button_frame.grid_columnconfigure(3, weight=1)  # 增加一列权重配置
+
+    def close_program(self):
+        self.root.destroy()
+
     def select_image(self):
         self.image_path = filedialog.askopenfilename(filetypes=[("Image files", "*.jpg *.jpeg *.png")])
         if self.image_path:
@@ -96,7 +109,7 @@ class ImageProcessorApp:
 
     def display_image(self, label, image_path):
         image = Image.open(image_path)
-        image.thumbnail((300, 300))  # 缩放图片以适应Label
+        image.thumbnail((300, 300))  # 修改缩放图片大小为300x400
         photo = ImageTk.PhotoImage(image)
         label.image = photo  # 保持对PhotoImage对象的引用
         label.config(image=photo)
