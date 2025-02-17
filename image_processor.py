@@ -49,19 +49,8 @@ class ImageProcessorApp:
     def __init__(self, root):
         self.root = root
         self.root.title("二寸证件照生成器")
-        self.root.geometry("1200x600")  # 增加初始窗口宽度
+        self.root.geometry("1200x800")  # 修改初始窗口高度为800
         self.root.configure(bg="#f0f0f0")
-        
-        # 获取屏幕宽度和高度
-        screen_width = root.winfo_screenwidth()
-        screen_height = root.winfo_screenheight()
-        
-        # 计算窗口位置
-        x = (screen_width - 800) // 2
-        y = (screen_height - 600) // 2
-        
-        # 设置窗口位置
-        self.root.geometry(f"800x600+{x}+{y}")
         
         self.image_path = None
         self.background_color = (255, 255, 255)  # 默认背景颜色为白色
@@ -99,17 +88,6 @@ class ImageProcessorApp:
         self.save_image_button = tk.Button(button_frame, text="保存图片", command=self.save_image, bg="#FF5722", fg="white", font=("Arial", 12), padx=10, pady=5)
         self.save_image_button.pack(side=tk.LEFT, padx=10, expand=True)
         
-        # 调整窗口大小以适应按钮
-        self.adjust_window_size()
-
-    def adjust_window_size(self):
-        # 计算按钮的总宽度
-        total_button_width = self.select_image_button.winfo_reqwidth() + self.select_color_button.winfo_reqwidth() + self.save_image_button.winfo_reqwidth() + 60  # 添加一些额外的间距
-        # 获取当前窗口的高度
-        current_height = self.root.winfo_height()
-        # 设置新的窗口大小
-        self.root.geometry(f"{total_button_width}x{current_height}")
-
     def select_image(self):
         self.image_path = filedialog.askopenfilename(filetypes=[("Image files", "*.jpg *.jpeg *.png")])
         if self.image_path:
