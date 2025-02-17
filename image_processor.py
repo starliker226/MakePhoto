@@ -49,11 +49,20 @@ class ImageProcessorApp:
     def __init__(self, root):
         self.root = root
         self.root.title("二寸证件照生成器")
-        self.root.geometry("500x500")  # 设置固定窗口大小为1200x800
+        self.root.geometry("680x500")  # 设置固定窗口大小为500x500
         self.root.configure(bg="#f0f0f0")
+        
+        # 计算窗口在屏幕中央的位置
+        screen_width = root.winfo_screenwidth()
+        screen_height = root.winfo_screenheight()
+        x = (screen_width - 680) // 2
+        y = (screen_height - 500) // 2
+        self.root.geometry(f"+{x}+{y}")  # 设置窗口在屏幕中央
         
         self.image_path = None
         self.background_color = (255, 255, 255)  # 默认背景颜色为白色
+        self.one_inch_size = (295, 413)  # 增加一寸照片的尺寸
+        self.two_inch_size = (413, 579)  # 增加二寸照片的尺寸
         
         # 使用Grid布局来放置图片标签
         self.original_image_label = tk.Label(self.root, bg="#f0f0f0", bd=2, relief=tk.SOLID)
@@ -84,9 +93,13 @@ class ImageProcessorApp:
         self.select_color_button = tk.Button(button_frame, text="选择背景颜色", command=self.select_background_color, bg="#2196F3", fg="white", font=("Arial", 12), padx=10, pady=5)
         self.select_color_button.pack(side=tk.LEFT, padx=10, expand=True)
         
-        # 保存图片按钮
-        self.save_image_button = tk.Button(button_frame, text="保存图片", command=self.save_image, bg="#FF5722", fg="white", font=("Arial", 12), padx=10, pady=5)
-        self.save_image_button.pack(side=tk.LEFT, padx=10, expand=True)
+        # 新增导出合成图片按钮
+        self.export_composite_button = tk.Button(button_frame, text="导出二寸图片", command=self.export_composite_image, bg="#FF5722", fg="white", font=("Arial", 12), padx=10, pady=5)
+        self.export_composite_button.pack(side=tk.LEFT, padx=10, expand=True)
+        
+        # 导出一寸照片按钮
+        self.export_one_inch_button = tk.Button(button_frame, text="导出一寸照片", command=self.export_one_inch_image, bg="#9C27B0", fg="white", font=("Arial", 12), padx=10, pady=5)
+        self.export_one_inch_button.pack(side=tk.LEFT, padx=10, expand=True)
         
         # 关闭程序按钮
         self.close_button = tk.Button(button_frame, text="关闭程序", command=self.close_program, bg="#F44336", fg="white", font=("Arial", 12), padx=10, pady=5)
@@ -133,7 +146,7 @@ class ImageProcessorApp:
             self.display_image(self.composite_image_label, temp_output_path)
             os.remove(temp_output_path)  # 删除临时文件
 
-    def save_image(self):
+    def export_composite_image(self):
         if not self.image_path:
             messagebox.showerror("错误", "请先选择图片")
             return
@@ -142,11 +155,29 @@ class ImageProcessorApp:
         if output_path:
             processor = ImageProcessor(self.image_path)
             processor.load_image()
-            processor.create_mask()  # 修改为不带参数的create_mask方法
+            processor.create_mask()
+            processor.change_background(self.background_color)  # 使用选择的背景颜色
+            processor.composite_image(self.background_color)
+            processor.image = processor.image.resize(self.two_inch_size)  # 调整图片大小为二寸
+            processor.save_image(output_path)
+            messagebox.showinfo("提示", f"合成图片已保存到: {output_path}")
+            self.display_image(self.composite_image_label, output_path)
+
+    def export_one_inch_image(self):
+        if not self.image_path:
+            messagebox.showerror("错误", "请先选择图片")
+            return
+        
+        output_path = filedialog.asksaveasfilename(defaultextension=".jpg", filetypes=[("JPEG files", "*.jpg")])
+        if output_path:
+            processor = ImageProcessor(self.image_path)
+            processor.load_image()
+            processor.create_mask()
             processor.change_background((0, 0, 0))  # 更改背景颜色为黑色
             processor.composite_image(self.background_color)
+            processor.image = processor.image.resize(self.one_inch_size)  # 调整图片大小为一寸
             processor.save_image(output_path)
-            messagebox.showinfo("提示", f"图片已保存到: {output_path}")
+            messagebox.showinfo("提示", f"一寸照片已保存到: {output_path}")
             self.display_image(self.composite_image_label, output_path)
 
 def main():
