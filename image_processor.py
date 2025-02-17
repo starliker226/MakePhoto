@@ -52,7 +52,7 @@ class ImageProcessor:
 class ImageProcessorApp:
     def __init__(self, root):
         self.root = root
-        self.root.title("二寸证件照生成器")
+        self.root.title("证件照生成器")
         self.root.geometry("680x500")  # 设置固定窗口大小为680x500
         self.root.configure(bg="#f0f0f0")
         
