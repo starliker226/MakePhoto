@@ -3,7 +3,8 @@ import os
 import tkinter as tk
 from tkinter import filedialog, colorchooser, messagebox
 import numpy as np
-from rembg import remove  # 添加rembg库
+from rembg import remove  # 使用rembg库进行人物抠图
+
 # 确保安装onnxruntime库，可以通过以下命令安装：
 # pip install onnxruntime
 # 确保安装numba和pymatting库的最新版本，可以通过以下命令安装：
@@ -16,6 +17,7 @@ class ImageProcessor:
         self.mask = None
 
     def load_image(self):
+        # 加载图像
         return self.image
 
     def create_mask(self):
@@ -35,6 +37,7 @@ class ImageProcessor:
         self.image = new_image.convert('RGB')
 
     def composite_image(self, background_color):
+        # 将抠图与背景颜色合成
         if self.mask is None:
             raise ValueError("Mask not created. Please create a mask first.")
         background = Image.new('RGB', self.image.size, background_color)
@@ -42,6 +45,7 @@ class ImageProcessor:
         self.image = composite
 
     def save_image(self, output_path):
+        # 保存处理后的图像
         self.image.save(output_path)
         print(f"Image saved to {output_path}")
 
@@ -49,7 +53,7 @@ class ImageProcessorApp:
     def __init__(self, root):
         self.root = root
         self.root.title("二寸证件照生成器")
-        self.root.geometry("680x500")  # 设置固定窗口大小为500x500
+        self.root.geometry("680x500")  # 设置固定窗口大小为680x500
         self.root.configure(bg="#f0f0f0")
         
         # 计算窗口在屏幕中央的位置
@@ -61,8 +65,8 @@ class ImageProcessorApp:
         
         self.image_path = None
         self.background_color = (255, 255, 255)  # 默认背景颜色为白色
-        self.one_inch_size = (295, 413)  # 增加一寸照片的尺寸
-        self.two_inch_size = (413, 579)  # 增加二寸照片的尺寸
+        self.one_inch_size = (295, 413)  # 一寸照片的尺寸
+        self.two_inch_size = (413, 579)  # 二寸照片的尺寸
         
         # 使用Grid布局来放置图片标签
         self.original_image_label = tk.Label(self.root, bg="#f0f0f0", bd=2, relief=tk.SOLID)
@@ -112,22 +116,26 @@ class ImageProcessorApp:
         button_frame.grid_columnconfigure(3, weight=1)  # 增加一列权重配置
 
     def close_program(self):
+        # 关闭程序
         self.root.destroy()
 
     def select_image(self):
+        # 选择图片文件
         self.image_path = filedialog.askopenfilename(filetypes=[("Image files", "*.jpg *.jpeg *.png")])
         if self.image_path:
             self.image_info_label.config(text=f"已选择图片: {self.image_path}")
             self.display_image(self.original_image_label, self.image_path)
 
     def display_image(self, label, image_path):
+        # 显示图片
         image = Image.open(image_path)
-        image.thumbnail((300, 300))  # 修改缩放图片大小为300x400
+        image.thumbnail((300, 300))  # 修改缩放图片大小为300x300
         photo = ImageTk.PhotoImage(image)
         label.image = photo  # 保持对PhotoImage对象的引用
         label.config(image=photo)
 
     def select_background_color(self):
+        # 选择背景颜色
         color_code = colorchooser.askcolor(title="选择背景颜色")[0]
         if color_code:
             self.background_color = tuple(int(c) for c in color_code)
@@ -135,6 +143,7 @@ class ImageProcessorApp:
             self.update_composite_image()
 
     def update_composite_image(self):
+        # 更新合成图片
         if self.image_path:
             processor = ImageProcessor(self.image_path)
             processor.load_image()
@@ -147,6 +156,7 @@ class ImageProcessorApp:
             os.remove(temp_output_path)  # 删除临时文件
 
     def export_composite_image(self):
+        # 导出合成的二寸图片
         if not self.image_path:
             messagebox.showerror("错误", "请先选择图片")
             return
@@ -164,6 +174,7 @@ class ImageProcessorApp:
             self.display_image(self.composite_image_label, output_path)
 
     def export_one_inch_image(self):
+        # 导出一寸照片
         if not self.image_path:
             messagebox.showerror("错误", "请先选择图片")
             return
@@ -181,6 +192,7 @@ class ImageProcessorApp:
             self.display_image(self.composite_image_label, output_path)
 
 def main():
+    # 主函数
     root = tk.Tk()
     app = ImageProcessorApp(root)
     root.mainloop()
