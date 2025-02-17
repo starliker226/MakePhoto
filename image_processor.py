@@ -161,7 +161,7 @@ class ImageProcessorApp:
             messagebox.showerror("错误", "请先选择图片")
             return
         
-        output_path = filedialog.asksaveasfilename(defaultextension=".jpg", filetypes=[("JPEG files", "*.jpg")])
+        output_path = filedialog.asksaveasfilename(defaultextension=".jpg", filetypes=[("JPEG files", "*.jpg"), ("PNG files", "*.png"), ("BMP files", "*.bmp")])
         if output_path:
             processor = ImageProcessor(self.image_path)
             processor.load_image()
@@ -179,7 +179,7 @@ class ImageProcessorApp:
             messagebox.showerror("错误", "请先选择图片")
             return
         
-        output_path = filedialog.asksaveasfilename(defaultextension=".jpg", filetypes=[("JPEG files", "*.jpg")])
+        output_path = filedialog.asksaveasfilename(defaultextension=".jpg", filetypes=[("JPEG files", "*.jpg"), ("PNG files", "*.png"), ("BMP files", "*.bmp")])
         if output_path:
             processor = ImageProcessor(self.image_path)
             processor.load_image()
